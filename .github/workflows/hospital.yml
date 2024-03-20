@@ -23,7 +23,7 @@ jobs:
           context: .
           push: true
           tags: tyrefic2k2/tyrefichospital:${{ github.run_id }}
-      - name: Login to the EC2
+      - name: Login to the EC2 instance
         uses: appleboy/ssh-action@v1.0.3
         with:
             host: ${{ secrets.Taiwo_HOST }}

@@ -24,7 +24,7 @@ jobs:
           file: Hospital
           context: .
           push: true
-          tags: teewaidock/nurse:${GIT_RUN_ID}
+          tags: teewaidock/nurse:${{ github.run_id }}
 
       - name: Login to the EC2 Instance
         uses: appleboy/ssh-action@v1.0.3
@@ -36,5 +36,5 @@ jobs:
           script: |
             docker stop porter || true
             docker rm porter || true
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${GIT_RUN_ID}
-            docker run -d --name porter -p 7000:80 ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${GIT_RUN_ID}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${{ github.run_id }}
+            docker run -d --name porter -p 7000:80 ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${{ github.run_id }}

@@ -1,0 +1,40 @@
+name: Docker Build and Push
+
+on:
+  push:
+    branches:
+      - teewai/hospital-branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          file: Hospital
+          context: .
+          push: true
+          tags: teewaidock/nurse:${GIT_RUN_ID}
+
+      - name: Login to the EC2 Instance
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.TEEWAI_HOST }}
+          username: ${{ secrets.TEEWAI_USERNAME }}
+          key: ${{ secrets.TEEWAI_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            docker stop porter || true
+            docker rm porter || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${GIT_RUN_ID}
+            docker run -d --name porter -p 7000:80 ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${GIT_RUN_ID}

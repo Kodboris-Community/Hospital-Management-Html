@@ -36,5 +36,5 @@ jobs:
           script: |
             docker stop porter || true
             docker rm porter || true
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${{ github.run_id }}
-            docker run -d --name porter -p 700:80 ${{ secrets.DOCKERHUB_USERNAME }}/hospital:${{ github.run_id }}
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/nurse:${{ github.run_id }}
+            docker run -d --name porter -p 700:80 ${{ secrets.DOCKERHUB_USERNAME }}/nurse:${{ github.run_id }}
